@@ -1,14 +1,18 @@
-<form #loginForm="ngForm" class="col s12 white">
+
+<div *ngIf="isLoginError" class="red-text center error-message">
+  <i class="material-icons">error</i> Incorrect username or password
+</div>
+<form #loginForm="ngForm" class="col s12 white" (ngSubmit)="OnSubmit(username, password)">
   <div class="row">
     <div class="input-field col s12">
         <i class="material-icons prefix">account_circle</i>
-      <input type="text" #userName ngModel name ="userName" placeholder="User Name" required>
+      <input type="text" name ="username"  [(ngModel)]="username"  placeholder="userName" required>
     </div>
   </div>
   <div class="row">
     <div class="input-field col s12">
         <i class="material-icons prefix">vpn_key</i>
-      <input type="password" #Password ngModel name ="password" placeholder="Password" required>
+      <input type="password" name ="password"  [(ngModel)]="password"  placeholder="password" required>
     </div>
   </div>
 

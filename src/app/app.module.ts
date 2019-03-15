@@ -8,10 +8,13 @@ import { SignInComponent } from './user/sign-in/sign-in.component';
 import { HomeComponent } from './home/home.component';
 import { SignUpComponent } from './user/sign-up/sign-up.component';
 import { RouterModule,  Routes } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule ,HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { appRoutes } from 'src/routes';
 import { FormsModule } from '@angular/forms';
+import { UserService } from './shared/user.service';
+import { AuthInterceptor } from './auth/auth.interceptor';
+import { AuthGuard } from './auth/auth.guard';
 
 
 @NgModule({
@@ -27,10 +30,14 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    ToastrModule,
+    ToastrModule.forRoot(),
     RouterModule.forRoot(appRoutes) 
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [UserService, AuthGuard,{
+    provide : HTTP_INTERCEPTORS,
+    useClass : AuthInterceptor,
+    multi : true
+  }],
+bootstrap: [AppComponent]
 })
 export class AppModule { }
