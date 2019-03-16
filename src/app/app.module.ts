@@ -17,6 +17,7 @@ import { AuthInterceptor } from './auth/auth.interceptor';
 import { AuthGuard } from './auth/auth.guard';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +31,7 @@ import { AuthGuard } from './auth/auth.guard';
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    ToastrModule.forRoot(),
+  ToastrModule.forRoot(),
     RouterModule.forRoot(appRoutes) 
   ],
   providers: [UserService, AuthGuard,{

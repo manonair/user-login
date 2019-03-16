@@ -4,66 +4,53 @@ import { UserService } from 'src/app/shared/user.service';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
+import { first } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.css']
 })
-export class SignInComponent implements OnInit {
 
-  isLoginError : boolean = false;
-  constructor(private userService : UserService,private router : Router) { }
+
+export class SignInComponent implements OnInit {
+  isLoginError: boolean = false;
+  loginForm: NgForm;
+  loading = false;
+  submitted = false;
+  returnUrl: string = '/home';
+  formModel = {
+    username: '',
+    password: '',
+    grant_type: 'password',
+    client_id: 'spring-security-oauth2-read-write-client'
+  }
+
+
+
+  constructor(private userService: UserService, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit() {
   }
 
 
-   OnSubmit(userName: string,password: string){
-
-    this.userService.userAuthentication(userName,password).subscribe(
-      (res: any) => {
-        console.log(res);
-        localStorage.setItem('token', res.access_token);
-        this.router.navigateByUrl('/home');
-      },
-      err => {
-        if (err.status == 400)
-          console.log('Incorrect username or password.', 'Authentication failed.');
-        else
-          console.log(err);
-      }
-);
-
-    /* this.userService.userAuthentication(userName,password).subscribe(
-      data =>{
-      console.log(JSON.stringify(data));
-     //localStorage.setItem('userToken',data.access_token);
-     
-     this.router.navigate(['/home']);
-   },
-   (err : HttpErrorResponse)=>{
-    console.log(err)
-     this.isLoginError = true;
-   } 
-); */
+  onSubmit(loginForm: NgForm) {
+    console.log(loginForm.value);
+    this.userService.userAuthentication(loginForm.value)
+      .subscribe(
+        (res: any) => {
+          localStorage.setItem('userToken', res.access_token);
+          this.router.navigateByUrl('/home');
+        },
+        err => {
+          if (err.status == 400)
+            this.toastr.error('Incorrect username or password.', 'Authentication failed.');
+          else
+            console.log(err);
+        }
+      );
   }
-
-   /* OnSubmit1(form : NgForm){
-
-    console.log(form.value);
-
-    this.userService.login(form.value).subscribe((data : any)=>{
-      console.log(data);
-     localStorage.setItem('userToken',data.access_token);
-     this.router.navigate(['/home']);
-   },
-   (err : HttpErrorResponse)=>{
-     console.log(err.message)
-     this.isLoginError = true;
-   }); */
-  
-
-
 
 }
